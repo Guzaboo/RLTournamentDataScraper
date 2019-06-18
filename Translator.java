@@ -17,7 +17,7 @@ public class Translator
     {
         ArrayList<Tournament> tournaments = new ArrayList<Tournament>();
         for(int i=0; i <= 27; i++){
-            String file = new String(Files.readAllBytes(Paths.get("E:/Programming/BlueJ/RLTournamentDataScraper/Tournaments/" + i + ".html")), StandardCharsets.UTF_8);
+            String file = new String(Files.readAllBytes(Paths.get("Tournaments/" + i + ".html")), StandardCharsets.UTF_8);
             String lowerFile = file.toLowerCase();
             int nameStart = file.indexOf("Template:Infobox league\">h</a>]</span>")+38;
             int nameEnd = file.indexOf("</div>", nameStart);
