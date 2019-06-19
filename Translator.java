@@ -13,10 +13,14 @@ import java.net.URL;
 import java.io.InputStream;
 public class Translator
 {
+    public static String[] eu = {"Germany", "Scotland", "Italy", "Sweden", "Netherlands", "Switzerland", "England", "France", "Austria", "Belgium", "Czech_Republic", "Denmark", "Finland", "Hungary", "Ireland", "Norway", "Poland", "Portugal", "Slovenia", "Spain", "Wales"};
+    public static String[] na = {"United_States", "Canada", "Mexico"};
+    public static String[] oce = {"Australia", "New_Zealand"};
+    
     public static void main(String[] args) throws IOException
     {
         ArrayList<Tournament> tournaments = new ArrayList<Tournament>();
-        for(int i=0; i <= 27; i++){
+        for(int i=0; i <= 61; i++){
             String file = new String(Files.readAllBytes(Paths.get("Tournaments/" + i + ".html")), StandardCharsets.UTF_8);
             String lowerFile = file.toLowerCase();
             int nameStart = file.indexOf("Template:Infobox league\">h</a>]</span>")+38;
@@ -80,6 +84,12 @@ public class Translator
                             }
                 int finalIndex = file.indexOf("<div class=\"teamcard\"", index);
                 int coachIndex = file.indexOf("<abbr title=\"Coach\">C", index);
+                
+                start = file.indexOf("<tbody><tr><th>1</th><td><a href=\"/rocketleague/Category:", index)+57;
+                end = file.indexOf("\"", start);
+                String country = file.substring(start, end);
+                String region = findRegion(country);
+                
                 start = file.indexOf("&#160;<a href=\"/rocketleague/", end)+29;
                 ArrayList<String> players = new ArrayList<String>();
                 while(start != -1+29 && start < endIndex && (start < finalIndex || finalIndex == -1) && (start < coachIndex || coachIndex == -1)){
@@ -116,7 +126,7 @@ public class Translator
                 String id = file.substring(start, end);*/
                 System.out.println(id);
                 
-                teams.add(new Team(teamName, id, players));
+                teams.add(new Team(teamName, id, players, region));
                 index = finalIndex;
             }
             
@@ -293,6 +303,25 @@ public class Translator
             tournaments.add(new Tournament(name, lan, premier, teams, matches));
         }
         saveJSON(tournaments);
+    }
+    
+    private static String findRegion(String country){
+        for(int c=0; c<eu.length; c++){
+            if(country.equals(eu[c])){
+                return "eu";
+            }
+        }
+        for(int c=0; c<na.length; c++){
+            if(country.equals(na[c])){
+                return "na";
+            }
+        }
+        for(int c=0; c<oce.length; c++){
+            if(country.equals(oce[c])){
+                return "oce";
+            }
+        }
+        throw new Error("Could not assign country to region: "+country);
     }
     
     private static void saveJSON(ArrayList<Tournament> tournaments) throws FileNotFoundException
