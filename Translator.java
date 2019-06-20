@@ -16,11 +16,12 @@ public class Translator
     public static String[] eu = {"Germany", "Scotland", "Italy", "Sweden", "Netherlands", "Switzerland", "England", "France", "Austria", "Belgium", "Czech_Republic", "Denmark", "Finland", "Hungary", "Ireland", "Norway", "Poland", "Portugal", "Slovenia", "Spain", "Wales"};
     public static String[] na = {"United_States", "Canada", "Mexico"};
     public static String[] oce = {"Australia", "New_Zealand"};
+    public static String[] sam = {"Brazil", "Colombia", "Uruguay", "Argentina", "Chile"};
     
     public static void main(String[] args) throws IOException
     {
         ArrayList<Tournament> tournaments = new ArrayList<Tournament>();
-        for(int i=0; i <= 61; i++){
+        for(int i=0; i <= 75; i++){
             String file = new String(Files.readAllBytes(Paths.get("Tournaments/" + i + ".html")), StandardCharsets.UTF_8);
             String lowerFile = file.toLowerCase();
             int nameStart = file.indexOf("Template:Infobox league\">h</a>]</span>")+38;
@@ -54,7 +55,7 @@ public class Translator
             int endIndex = file.indexOf("</div></div>\n</div></div>", index);
             int check = file.indexOf("content2", endIndex);
             if(check != -1){
-                endIndex = file.indexOf("</div>\n</div>\n</div>\n</div></div>", check);
+                endIndex = file.indexOf("</div></div>\n</div>\n</div>", check);
             }
             ArrayList<Team> teams = new ArrayList<Team>();
             while(index != -1){
@@ -319,6 +320,11 @@ public class Translator
         for(int c=0; c<oce.length; c++){
             if(country.equals(oce[c])){
                 return "oce";
+            }
+        }
+        for(int c=0; c<sam.length; c++){
+            if(country.equals(sam[c])){
+                return "sam";
             }
         }
         throw new Error("Could not assign country to region: "+country);
