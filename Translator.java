@@ -80,9 +80,6 @@ public class Translator
                 end = file.indexOf("<", start);
                 String teamName = file.substring(start, end);
                 System.out.println(teamName);
-                            if(teamName.equals("Ascension")){
-                                int f=3;
-                            }
                 int finalIndex = file.indexOf("<div class=\"teamcard\"", index);
                 int coachIndex = file.indexOf("<abbr title=\"Coach\">C", index);
                 
@@ -114,9 +111,6 @@ public class Translator
                     }
                     players.add(playerName);
                     System.out.println(playerName);
-                            if(name.equals("FACEIT X Games Rocket League Invitational") && playerName.equals("Torment")){
-                                int f=3;
-                            }
                     start = file.indexOf("&#160;<a href=\"/rocketleague/", end)+29;
                 }
                 /*
@@ -131,46 +125,46 @@ public class Translator
                 index = finalIndex;
             }
             
-                        //alt team ids
-                        index = file.indexOf("<dd><sup>");
-                        int close = file.indexOf("</dd></dl>", index);
-                        while(index != -1){
-                            int nextIndex = file.indexOf("<dd><sup>", index+1);
-                            index = file.indexOf("<a href=\"", index);
-                            ArrayList<String> altIDs = new ArrayList<String>();
-                            while(index != -1 && (index < nextIndex || nextIndex == -1) && index < close){
-                                int start = index+9;
-                                int end = file.indexOf("\"", start);
-                                String altID = file.substring(start, end);
-                                if(altID.indexOf("?title") == -1){
-                                    String url = "https://liquipedia.net" + altID;
-                                    URLConnection con = new URL(url).openConnection();
-                                    con.connect();
-                                    InputStream is = con.getInputStream();
-                                    String redURL = con.getURL().toString();
-                                    System.out.println( "redirected url: " + redURL );
-                                    altID = redURL.substring(22, redURL.length());
-                                    is.close();
-                                }
-                                altIDs.add(altID);
-                                index = file.indexOf("<a href=\"", end);
-                            }
-                            for(int t=0; t < teams.size(); t++){
-                                for(int j=0; j < altIDs.size(); j++){
-                                    if(teams.get(t).id.equals(altIDs.get(j))){
-                                        for(int k=0; k < altIDs.size(); k++){
-                                            if(k != j){
-                                                teams.get(t).addAltID(altIDs.get(k));
-                                            }
-                                        }
-                                    }
+            //alt team ids
+            index = file.indexOf("<dd><sup>");
+            int close = file.indexOf("</dd></dl>", index);
+            while(index != -1){
+                int nextIndex = file.indexOf("<dd><sup>", index+1);
+                index = file.indexOf("<a href=\"", index);
+                ArrayList<String> altIDs = new ArrayList<String>();
+                while(index != -1 && (index < nextIndex || nextIndex == -1) && index < close){
+                    int start = index+9;
+                    int end = file.indexOf("\"", start);
+                    String altID = file.substring(start, end);
+                    if(altID.indexOf("?title") == -1){
+                        String url = "https://liquipedia.net" + altID;
+                        URLConnection con = new URL(url).openConnection();
+                        con.connect();
+                        InputStream is = con.getInputStream();
+                        String redURL = con.getURL().toString();
+                        System.out.println( "redirected url: " + redURL );
+                        altID = redURL.substring(22, redURL.length());
+                        is.close();
+                    }
+                    altIDs.add(altID);
+                    index = file.indexOf("<a href=\"", end);
+                }
+                for(int t=0; t < teams.size(); t++){
+                    for(int j=0; j < altIDs.size(); j++){
+                        if(teams.get(t).id.equals(altIDs.get(j))){
+                            for(int k=0; k < altIDs.size(); k++){
+                                if(k != j){
+                                    teams.get(t).addAltID(altIDs.get(k));
                                 }
                             }
-                            if(index > close){
-                                break;
-                            }
-                            index = nextIndex;
                         }
+                    }
+                }
+                if(index > close){
+                    break;
+                }
+                index = nextIndex;
+            }
             
             //matches
             index = file.indexOf("bracket-popup-header-left");
@@ -194,21 +188,17 @@ public class Translator
                     team1 = redURL.substring(22, redURL.length());
                     is.close();
                 }
-                
-                if(name.equals("RLCS Season 2 - North America")){
-                    int f=3;
+                for(int a=0; a<teams.size(); a++){
+                    if(teams.get(a).id.equals(team1)){
+                        break;
+                    }
+                    for(int j=0; j<teams.get(a).altIDs.size(); j++){
+                        if(teams.get(a).altIDs.get(j).equals(team1)){
+                            team1 = teams.get(a).id;
+                            break;
+                        }
+                    }
                 }
-                            for(int a=0; a<teams.size(); a++){
-                                if(teams.get(a).id.equals(team1)){
-                                    break;
-                                }
-                                for(int j=0; j<teams.get(a).altIDs.size(); j++){
-                                    if(teams.get(a).altIDs.get(j).equals(team1)){
-                                        team1 = teams.get(a).id;
-                                        break;
-                                    }
-                                }
-                            }
                 index = file.indexOf("bracket-popup-header-right", index);
                 index = file.indexOf("team-template-text", index);
                 start = file.indexOf("<a href=\"", index)+9;
@@ -225,17 +215,17 @@ public class Translator
                     is.close();} catch(FileNotFoundException e){}
                 }
                 
-                            for(int a=0; a<teams.size(); a++){
-                                if(teams.get(a).id.equals(team2)){
-                                    break;
-                                }
-                                for(int j=0; j<teams.get(a).altIDs.size(); j++){
-                                    if(teams.get(a).altIDs.get(j).equals(team2)){
-                                        team2 = teams.get(a).id;
-                                        break;
-                                    }
-                                }
-                            }
+                for(int a=0; a<teams.size(); a++){
+                    if(teams.get(a).id.equals(team2)){
+                        break;
+                    }
+                    for(int j=0; j<teams.get(a).altIDs.size(); j++){
+                        if(teams.get(a).altIDs.get(j).equals(team2)){
+                            team2 = teams.get(a).id;
+                            break;
+                        }
+                    }
+                }
                 System.out.println("\n"+team1+" VS "+team2);
                 
                 index = file.indexOf("bracket-popup-body\"", index);
